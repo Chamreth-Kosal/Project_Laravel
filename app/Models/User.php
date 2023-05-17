@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -41,4 +43,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function store($request, $id = null){
+
+        $users = $request->only(['name', 'email','password']);
+        $users = self::updateOrCreate(['id'=>$id],$users);
+        return $users;
+
+    }
+
+    public function ticket():BelongsTo{
+        return $this->belongsTo(Ticket::class);
+    }
+
+    public function event():BelongsTo{
+        return $this->belongsTo(Event::class);
+    }
+    public function team():BelongsTo{
+        return $this->belongsTo(Team::class);
+    }
+
+     
 }
